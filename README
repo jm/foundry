@@ -1,0 +1,119 @@
+= Foundry
+== by Jeremy McAnally and Nicolas Sanguinetti
+
+Foundry is YAFRP (Yet Another Fixture Replacement Plugin), but it takes an interesting approach.  It 
+dynamically creates named_scopes and builds objects off those.
+
+=== Usage
+
+To create factory scopes, you can either use the direct method:
+
+  Foundry.factory User, :valid_user, :name => "Jeremy", :login => "jeremy", :password => "1234"
+  Foundry.factory User, :valid_user { {conditions => {:name => "Jeremy"}}}
+  
+...or the nifty little DSL:
+
+  model User do
+    factory :valid_user, :name => "Jeremy", :login => "jeremy"
+    factory :my_user do
+      {:conditions => {:name => "Mr. Awesome"}}
+    end
+    
+    # Giving no name creates a factory with the name `valid`
+    factory do
+      {:conditions => {:login => "hello"}}
+    end
+  end
+  
+To create a record using these scopes, just do it like normal:
+
+  User.valid_user.create
+  
+Voila!
+
+==== Parameters
+
+Just like in normal +named_scope+ usage, you can pass parameters to these scopes:
+
+  model User do
+    factory :paramd do |one, two|
+      {:conditions => {:name => "#{one} - #{two}"}}
+    end
+  end
+  
+Then call it like so:
+
+  User.paramd("Mr.", "User").create
+
+==== More advanced usage
+
+These are just the basic use cases.  You can also do interesting things like this:
+
+  model Page do
+    def unique
+      rand(Time.now.to_i)
+    end
+    
+    10.times do |i|
+      factory "valid_#{i}".to_sym, :title => "Page #{unique}"
+    end
+  end
+  
+  # In your tests
+  Page.valid_2.create
+  # => #<Page id: 3, title: "Page 123872138", created_at: ..., updated_at: ...>
+
+Or, if you're really serious about unique data...
+
+  # test_helper.rb / spec_helper.rb
+  require 'faker'
+  
+  module Unique 
+    def unique(attr)
+      if [:name, :first_name, :last_name].include?(attr)
+        return Faker::Name.send(attr)
+      elsif [:company_name, :company_bs, :company_catch_phrase].include?(attr)
+        return Faker::Company.send(attr.to_s.gsub(/company_/, '')) # name is in user and company
+      elsif [:email, :free_email, :user_name, :domain_name].include?(attr)
+        return Faker::Internet.send(attr)
+      else
+        raise ArgumentError, "I'm not sure what random data you want by specifying #{attr}!"
+      end
+    end
+  end
+  
+  module Foundry
+    class Runner
+      include Unique
+    end
+  end
+
+  # In your foundries.rb or whatever
+  model User do
+    10.times do |i|
+      factory "user_#{i}".to_sym, :name => unique(:name), :login => unique(:user_name), :password => "1234"
+    end
+  end
+  
+  # In your tests
+  User.user_3.create 
+  # => #<User id: 6, name: "Florian Schuppe", login: "kenneth", :password => "1234", created_at: ..., updated_at: ...>
+  
+OR, you could take that even one step further with a block...
+
+  # In your foundries.rb or whatever
+  model User do
+    factory :unique do
+     {:conditions => {:name => unique(:name), :login => unique(:user_name), :password => "1234"}}
+    end
+  end
+  
+  # In your tests
+  User.unique.create 
+  # => #<User id: 12, name: "Wanda Sharp", login: "delia", :password => "1234", created_at: ..., updated_at: ...>
+  User.unique.create 
+  # => #<User id: 13, name: "Alec Eichmann", login: "adam", :password => "1234", created_at: ..., updated_at: ...>
+  User.unique.create 
+  # => #<User id: 14, name: "Derek Gleichner", login: "jared", :password => "1234", created_at: ..., updated_at: ...>
+
+Copyright (c) 2009 Jeremy McAnally, released under the MIT license
