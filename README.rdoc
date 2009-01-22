@@ -47,7 +47,34 @@ Then call it like so:
 
 ==== More advanced usage
 
-These are just the basic use cases.  You can also do interesting things like this:
+Since they're just named_scope's you can actually chain them.  So if you had a user factory like this:
+
+  model User
+    factory do
+      {:conditions => {:name => "Jeremy", :login => "jeremy", :role => "user"}}
+    end
+  end
+  
+You could add another...
+
+  model User
+    factory do
+      {:conditions => {:name => "Jeremy", :login => "jeremy", :role => "hello"}}
+    end
+    
+    factory :with_role do |role|
+      {:conditions => {:role => role}}
+    end
+  end
+  
+...and then chain them:
+
+  User.valid.with_role("admin").create
+
+You can chain as many as you want that way.
+
+But these are just the basic use cases, since we don't have any random data.  But, since it's implemented the way
+it is, you can do interesting things like this for random data:
 
   model Page do
     def unique
