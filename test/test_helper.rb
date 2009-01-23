@@ -16,7 +16,7 @@ if File.exist?(env)
 else
   gem 'activesupport', '>=2.1'
   gem 'activerecord', '>=2.1'
-  
+
   require 'active_record'
   ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ":memory:"
   require 'foundry'
@@ -27,24 +27,24 @@ Time.zone = "UTC"
 module FoundryHelper
   class Record < ActiveRecord::Base
     set_table_name 'foundry_records'
-    
+
     def self.create_table
       connection.create_table table_name, :force => true do |t|
         t.string   :title
         t.datetime :created_at
       end
     end
-    
+
     def self.drop_table
       connection.drop_table table_name
     end
-    
+
     def self.seed_data(now = Time.now.utc)
       transaction do
         create :title => 'default', :created_at => now - 5.minutes
       end
     end
   end
-  
+
   Record.create_table
 end
