@@ -80,6 +80,9 @@ scope you could do:
 The +with+ scope with override any previous attribute definition with its own attributes.  This makes it dead simple
 to tweak a factory for just one test (f.e., testing permissions for a lot of roles).
 
+NOTE: If you are not on Edge Rails/Rails 2.3, you need to put your +with+ scopes *first* or they will not be merged
+right.  There was a bug in previous versions of Rails where previous scopes took precedent over later ones.
+
 But these are just the basic use cases, since we don't have any random data.  But, since it's implemented the way
 it is, you can do interesting things like this for random data:
 
