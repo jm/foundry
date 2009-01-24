@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class FoundryTest < ActiveSupport::TestCase
+class FoundryTest < Test::Unit::TestCase
   include FoundryHelper
   
   # Replace this with your real tests.

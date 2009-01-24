@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class DslTest < ActiveSupport::TestCase
+class DslTest < Test::Unit::TestCase
   include FoundryHelper
   
   # Replace this with your real tests.
@@ -37,7 +37,7 @@ class DslTest < ActiveSupport::TestCase
     it "should accept a block definition" do
       @runner.model Record do
         factory :blked do
-          {:conditions => {:title => "w00t"}}
+          {:title => "w00t"}
         end
       end
       
@@ -45,5 +45,12 @@ class DslTest < ActiveSupport::TestCase
       assert_equal "w00t", Record.blked.new.title
     end
     
+    it "should allow extra attributes" do
+      @runner.model Record do
+        factory :epic, :title => "EPIC FAIL"
+      end
+      
+      assert_equal "EPIC WIN", Record.epic.with(:title => "EPIC WIN").new.title
+    end
   end
 end

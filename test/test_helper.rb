@@ -2,9 +2,6 @@
 # and heavily modified for T::U usage
 require 'rubygems'
 
-require 'active_support'
-require 'active_support/test_case'
-
 require 'context'
 
 dir = File.dirname(__FILE__)
@@ -14,8 +11,11 @@ $:.unshift "#{dir}/../lib"
 if File.exist?(env)
   require env
 else
-  gem 'activesupport', '>=2.1'
-  gem 'activerecord', '>=2.1'
+  gem 'activesupport'
+  gem 'activerecord'
+  
+  require 'active_support'
+  require 'active_support/test_case'
   
   require 'active_record'
   ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ":memory:"
