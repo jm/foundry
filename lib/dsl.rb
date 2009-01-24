@@ -2,16 +2,16 @@ module Foundry
   def self.setup_foundries(&blk)
     Runner.new.instance_eval(&blk)
   end
-  
+
   class Runner
     def model(klass, &blk)
       @klass = klass
       @attrs = {}
-      
+
       instance_eval(&blk)
       add_with_scope unless klass.respond_to?(:with)
     end
-    
+
     def factory(name, definition=nil, &blk)
       if block_given?
         behavior = proc { {:conditions => blk.call} }

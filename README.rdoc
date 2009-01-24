@@ -9,7 +9,7 @@ dynamically creates named_scopes and builds objects off those.
 To create factory scopes, you can either use the direct method:
 
   Foundry.factory User, :valid_user, :name => "Jeremy", :login => "jeremy", :password => "1234"
-  Foundry.factory User, :valid_user { {conditions => {:name => "Jeremy"}}}
+  Foundry.factory User, :valid_user, { {conditions => {:name => "Jeremy"}}}
   
 ...or the nifty little DSL:
 
