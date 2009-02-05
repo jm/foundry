@@ -12,7 +12,7 @@ module Foundry
       add_with_scope unless klass.respond_to?(:with)
     end
 
-    def factory(name, definition=nil, &blk)
+    def factory(name=nil, definition=nil, &blk)
       if block_given?
         behavior = proc { {:conditions => blk.call} }
         Foundry.factory(@klass, name, &behavior)

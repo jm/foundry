@@ -25,6 +25,16 @@ class DslTest < Test::Unit::TestCase
       assert Record.respond_to?(:your_factory)
     end
 
+    it "should create factory scopes using the default name if one is not given" do
+      @runner.model Record do
+        factory do
+          {:title => "AWESOME."}
+        end
+      end
+
+      assert Record.respond_to?(:valid)
+    end
+
     it "should accept a Hash definition" do
       @runner.model Record do
         factory :factoree, :title => "AWESOME."
