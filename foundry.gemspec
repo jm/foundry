@@ -1,6 +1,6 @@
 FOUNDRY_GEMSPEC = Gem::Specification.new do |s|
   s.name     = "foundry"
-  s.version  = "1.0.0"
+  s.version  = "0.1.0"
   s.date     = "2009-02-09"
   s.summary  = s.description = "Another fixture replacement using named_scope. It's fast and simple."
   s.email    = "jeremymcanally@gmail.com"
