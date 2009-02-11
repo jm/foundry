@@ -49,8 +49,22 @@ class DslTest < Test::Unit::TestCase
       @runner.model Record do
         factory :epic, :title => "EPIC FAIL"
       end
-      
+
       assert_equal "EPIC WIN", Record.epic.with(:title => "EPIC WIN").new.title
+    end
+
+    after do
+      # Clear Record of any added named scopes from the previously run test.
+      Record.scopes.each_key do |name|
+        unless [:scoped, :with].include? name
+          (class << Record; self end).instance_eval do
+            remove_method name
+          end
+
+          # Remove scope definition from +scopes+.
+          Record.scopes.delete name
+        end
+      end
     end
   end
 end
