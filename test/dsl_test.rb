@@ -52,5 +52,15 @@ class DslTest < Test::Unit::TestCase
       
       assert_equal "EPIC WIN", Record.epic.with(:title => "EPIC WIN").new.title
     end
+
+    it "should pass block arguments along to the scope block" do
+      @runner.model Record do
+        factory :win do |size|
+          {:title => "#{size} WIN"}
+        end
+      end
+
+      assert_equal "EPIC WIN", Record.win("EPIC").new.title
+    end
   end
 end

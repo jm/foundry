@@ -14,7 +14,7 @@ module Foundry
 
     def factory(name, definition=nil, &blk)
       if block_given?
-        behavior = proc { {:conditions => blk.call} }
+        behavior = proc { |*args| {:conditions => blk.call(*args)} }
         Foundry.factory(@klass, name, &behavior)
       elsif definition || !@attrs.empty?
         @attrs.merge!(definition) if definition
