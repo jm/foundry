@@ -25,6 +25,16 @@ class DslTest < Test::Unit::TestCase
       assert Record.respond_to?(:your_factory)
     end
 
+    it "should create factory scopes using the default name if one is not given" do
+      @runner.model Record do
+        factory do
+          {:title => "AWESOME."}
+        end
+      end
+
+      assert Record.respond_to?(:valid)
+    end
+
     it "should accept a Hash definition" do
       @runner.model Record do
         factory :factoree, :title => "AWESOME."
@@ -49,7 +59,7 @@ class DslTest < Test::Unit::TestCase
       @runner.model Record do
         factory :epic, :title => "EPIC FAIL"
       end
-      
+
       assert_equal "EPIC WIN", Record.epic.with(:title => "EPIC WIN").new.title
     end
 
@@ -61,6 +71,20 @@ class DslTest < Test::Unit::TestCase
       end
 
       assert_equal "EPIC WIN", Record.win("EPIC").new.title
+    end
+    
+    after do
+      # Clear Record of any added named scopes from the previously run test.
+      Record.scopes.each_key do |name|
+        unless [:scoped, :with].include? name
+          (class << Record; self end).instance_eval do
+            remove_method name
+          end
+
+          # Remove scope definition from +scopes+.
+          Record.scopes.delete name
+        end
+      end
     end
   end
 end
