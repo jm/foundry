@@ -12,7 +12,11 @@ module Foundry
       raise ArgumentError, "You need to provide a definition or a lambda/block definition!"
     end
 
-    model.named_scope name, definition
+    model.named_scope(name, definition) do
+      def form
+        proxy_options[:conditions]
+      end
+    end
   end
 
   class <<self

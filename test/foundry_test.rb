@@ -60,4 +60,20 @@ class FoundryTest < Test::Unit::TestCase
       end
     end
   end
+
+  context 'The scope' do
+    it "should return the defining hash" do
+      f = {:title => 'Untitled'}
+      Foundry.factory(Record, :untitled, f)
+      assert Record.untitled.respond_to?('form')
+      assert Record.untitled.form.is_a?(Hash)
+      assert_equal f, Record.untitled.form
+    
+      Foundry.factory(Record, :entitled) do |n|
+        {:conditions => {:title => "Title #{n}"}}
+      end
+      assert_equal( {:title => 'Title IX'}, Record.entitled('IX').form )
+    end
+  end
+
 end

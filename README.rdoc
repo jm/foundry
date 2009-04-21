@@ -31,6 +31,11 @@ To create a record using these scopes, just do it like normal:
   
 Voila!
 
+The created scope has a method that returns the attribute hash:
+
+	User.valid.form
+	# => {:login => "hello"}
+
 ==== Parameters
 
 Just like in normal +named_scope+ usage, you can pass parameters to these scopes:
