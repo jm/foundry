@@ -13,15 +13,17 @@ To create factory scopes, you can either use the direct method:
   
 ...or the nifty little DSL:
 
-  model User do
-    factory :valid_user, :name => "Jeremy", :login => "jeremy"
-    factory :my_user do
-      {:name => "Mr. Awesome"}
-    end
+  Foundry.setup_foundries do
+    model User do
+      factory :valid_user, :name => "Jeremy", :login => "jeremy"
+      factory :my_user do
+        {:name => "Mr. Awesome"}
+      end
     
-    # Giving no name creates a factory with the name `valid`
-    factory do
-      {:login => "hello"}
+      # Giving no name creates a factory with the name `valid`
+      factory do
+        {:login => "hello"}
+      end
     end
   end
   
@@ -76,17 +78,19 @@ You could add another...
 
   User.valid.with_role("admin").create
 
-You can chain as many as you want that way.  Each scope is also given a +with+ scope so you can change it at will
-for any arbitrary scope.  For example, if you wanted to remove the +with_role+ scope from above and use the +with+
-scope you could do:
+You can chain as many as you want that way.
+
+The DSL's model method adds a +with+ scope which you can chain with other scopes.  For example, you could use the +with+ scope in place of the +with_role+ scope:
 
   User.valid.with(:role => "admin")
   
-The +with+ scope with override any previous attribute definition with its own attributes.  This makes it dead simple
+The +with+ scope overrides any previous attribute definition with its own attributes.  This makes it dead simple
 to tweak a factory for just one test (f.e., testing permissions for a lot of roles).
 
 NOTE: If you are not on Edge Rails/Rails 2.3, you need to put your +with+ scopes *first* or they will not be merged
-right.  There was a bug in previous versions of Rails where previous scopes took precedent over later ones.
+right.  There was a bug in previous versions of Rails where previous scopes took precedence over later ones.
+
+For anyone distracted by multiple metaphors, Foundry.factory has alias Foundry.foundry.
 
 But these are just the basic use cases, since we don't have any random data.  But, since it's implemented the way
 it is, you can do interesting things like this for random data:
